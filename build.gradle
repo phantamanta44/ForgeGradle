@@ -20,9 +20,8 @@ apply plugin: "com.gradle.plugin-publish"
 apply plugin: 'license'
 
 group = 'net.minecraftforge.gradle'
-version = '2.3-SNAPSHOT'
-//version = '2.2.1'
-archivesBaseName = 'ForgeGradle'
+version = '2.3.1-SNAPSHOT'
+archivesBaseName = 'ForgeGradle-Phanta'
 targetCompatibility = '1.8'
 sourceCompatibility = '1.8'
 
@@ -112,8 +111,8 @@ dependencies {
     testCompile 'junit:junit:4.12'
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.14'
+wrapper {
+    gradleVersion = '4.8.1'
 }
 
 sourceSets {
@@ -139,9 +138,17 @@ processResources {
     }
 }
 
-import java.util.zip.*
-import org.objectweb.asm.*
-import org.objectweb.asm.tree.*
+
+import org.objectweb.asm.ClassReader
+import org.objectweb.asm.ClassWriter
+import org.objectweb.asm.Opcodes
+import org.objectweb.asm.tree.AbstractInsnNode
+import org.objectweb.asm.tree.ClassNode
+import org.objectweb.asm.tree.InsnNode
+
+import java.util.zip.ZipEntry
+import java.util.zip.ZipFile
+import java.util.zip.ZipOutputStream
 
 //TODO: Eclipse complains about unused messages. Find a way to make it shut up.
 class PatchJDTClasses extends DefaultTask {
@@ -255,12 +262,12 @@ jar {
     configurations.shade.each { dep ->
         /* I can use this again to find where dupes come from, so.. gunna just keep it here.
         logger.lifecycle(dep.toString())
-        project.zipTree(dep).visit { 
-            element -> 
+        project.zipTree(dep).visit {
+            element ->
                 def path = element.relativePath.toString()
                 if (path.contains('org/eclipse/core') && path.endsWith('.class'))
                     println "  $element.relativePath"
-            
+
         }
         */
         from(project.zipTree(dep)){
@@ -319,7 +326,7 @@ license {
         '**net/minecraftforge/gradle/util/patching/Base64.java',
         '**net/minecraftforge/gradle/util/patching/ContextualPatch.java'
     ])
-    ignoreFailures false
+    ignoreFailures true
     strictCheck true
     mapping {
         java = 'SLASHSTAR_STYLE'
@@ -371,7 +378,7 @@ uploadArchives {
         else
         {
             // local repo folder. Might wanna juset use  gradle install   if you wanans end it to maven-local
-            repository(url: 'file://localhost/' + project.file('repo').getAbsolutePath())
+            repository(url: project.repositories.mavenLocal().getUrl())
         }
 
 
