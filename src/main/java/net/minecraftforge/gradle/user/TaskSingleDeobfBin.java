@@ -120,7 +120,9 @@ public class TaskSingleDeobfBin extends CachedTask
                 // resources or directories.
                 if (entry.isDirectory() || !entry.getName().endsWith(".class"))
                 {
-                    zout.putNextEntry(new JarEntry(entry));
+                    JarEntry newEntry = new JarEntry(entry);
+                    newEntry.setCompressedSize(-1L); // force ZipOutputStream to recompute entry size and checksum
+                    zout.putNextEntry(newEntry);
                     ByteStreams.copy(zin, zout);
                     zout.closeEntry();
                 }
