@@ -20,7 +20,7 @@ apply plugin: "com.gradle.plugin-publish"
 apply plugin: 'license'
 
 group = 'net.minecraftforge.gradle'
-version = '2.3.1-SNAPSHOT'
+version = '2.4-SNAPSHOT'
 archivesBaseName = 'ForgeGradle-Phanta'
 targetCompatibility = '1.8'
 sourceCompatibility = '1.8'
@@ -29,7 +29,7 @@ repositories {
     mavenLocal()
     maven {
         name = "forge"
-        url = "https://files.minecraftforge.net/maven"
+        url = "https://maven.minecraftforge.net/"
     }
     maven {
         // because Srg2Source needs an eclipse dependency.
@@ -366,21 +366,8 @@ pluginBundle {
 
 uploadArchives {
     repositories.mavenDeployer {
-
         dependsOn 'build'
-
-        if (project.hasProperty('forgeMavenPassword'))
-        {
-            repository(url: "https://files.minecraftforge.net/maven/manage/upload") {
-                authentication(userName: project.getProperty('forgeMavenUser'), password: project.getProperty('forgeMavenPassword'))
-            }
-        }
-        else
-        {
-            // local repo folder. Might wanna juset use  gradle install   if you wanans end it to maven-local
-            repository(url: project.repositories.mavenLocal().getUrl())
-        }
-
+        repository(url: project.repositories.mavenLocal().getUrl())
 
         pom {
             groupId = project.group
@@ -389,18 +376,18 @@ uploadArchives {
             project {
                 name project.archivesBaseName
                 packaging 'jar'
-                description 'Gradle plugin for Forge'
-                url 'https://github.com/MinecraftForge/ForgeGradle'
+                description 'Gradle plugin for Forge -- Phanta fork'
+                url 'https://github.com/phantamanta44/ForgeGradle'
 
                 scm {
-                    url 'https://github.com/MinecraftForge/ForgeGradle'
-                    connection 'scm:git:git://github.com/MinecraftForge/ForgeGradle.git'
-                    developerConnection 'scm:git:git@github.com:MinecraftForge/ForgeGradle.git'
+                    url 'https://github.com/phantamanta44/ForgeGradle'
+                    connection 'scm:git:git://github.com/phantamanta44/ForgeGradle.git'
+                    developerConnection 'scm:git:git@github.com:phantamanta44/ForgeGradle.git'
                 }
 
                 issueManagement {
                     system 'github'
-                    url 'https://github.com/MinecraftForge/ForgeGradle/issues'
+                    url 'https://github.com/phantamanta44/ForgeGradle/issues'
                 }
 
                 licenses {
@@ -408,19 +395,6 @@ uploadArchives {
                         name 'Lesser GNU Public License, Version 2.1'
                         url 'https://www.gnu.org/licenses/lgpl-2.1.html'
                         distribution 'repo'
-                    }
-                }
-
-                developers {
-                    developer {
-                        id 'AbrarSyed'
-                        name 'Abrar Syed'
-                        roles { role 'developer' }
-                    }
-                    developer {
-                        id 'LexManos'
-                        name 'Lex Manos'
-                        roles { role 'developer' }
                     }
                 }
             }
